@@ -1,0 +1,49 @@
+def is_safe(board, row, col, N, obstacles):
+    for i in range(col):
+        if board[row][i] == 1 or (row, i) in obstacles:
+            return False
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1 or (i, j) in obstacles:
+            return False
+    for i, j in zip(range(row, N), range(col, -1, -1)):
+        if board[i][j] == 1 or (i, j) in obstacles:
+            return False
+    return True
+
+def solve_n_queens_util(board, col, N, obstacles):
+    if col >= N:
+        return True
+    for i in range(N):
+        if is_safe(board, i, col, N, obstacles):
+            board[i][col] = 1
+            if solve_n_queens_util(board, col + 1, N, obstacles):
+                return True
+            board[i][col] = 0
+    return False
+
+def solve_n_queens(N, obstacles=[]):
+    board = [[0 for _ in range(N)] for _ in range(N)]
+    for r, c in obstacles:
+        board[r][c] = -1  # Mark obstacles
+    if solve_n_queens_util(board, 0, N, obstacles):
+        return [i.index(1) + 1 for i in board if 1 in i]
+    return []
+
+# Example 1: 8x10 Board
+N1 = 8
+board1 = [[0 for _ in range(10)] for _ in range(N1)]
+solution1 = solve_n_queens(N1)
+print("8x10 Board Solution:", solution1)
+
+# Example 2: 5x5 Board with Obstacles
+N2 = 5
+obstacles2 = [(2, 2), (4, 4)]
+solution2 = solve_n_queens(N2, obstacles2)
+print("5x5 Board with Obstacles Solution:", solution2)
+
+# Example 3: 6x6 Board with Restricted Positions
+N3 = 6
+obstacles3 = []
+restricted_positions3 = [(0, 2), (0, 4)]
+solution3 = solve_n_queens(N3, restricted_positions3)
+print("6x6 Board with Restricted Positions Solution:", solution3)
