@@ -1,0 +1,49 @@
+import sys
+
+def optimal_bst(keys, freq, n):
+    cost = [[0 for _ in range(n)] for _ in range(n)]
+    root = [[0 for _ in range(n)] for _ in range(n)]
+
+    for i in range(n):
+        cost[i][i] = freq[i]
+        root[i][i] = i + 1
+
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            cost[i][j] = sys.maxsize
+            total_freq = sum(freq[k] for k in range(i, j + 1))
+
+            for r in range(i, j + 1):
+                c = (cost[i][r - 1] if r > i else 0) + \
+                    (cost[r + 1][j] if r < j else 0) + total_freq
+                if c < cost[i][j]:
+                    cost[i][j] = c
+                    root[i][j] = r + 1
+
+    return cost[0][n - 1], root
+
+keys = ['A', 'B', 'C', 'D']
+freq = [0.1, 0.2, 0.4, 0.3]
+n = len(keys)
+
+result_cost, root_matrix = optimal_bst(keys, freq, n)
+
+print("Optimal Cost:", result_cost)
+print("Cost Table:")
+for row in result_cost:
+    print(row)
+
+print("Root Table:")
+for row in root_matrix:
+    print(row)
+
+# Test cases
+test_cases = [
+    (['10', '12'], [34, 50]),
+    (['10', '12', '20'], [34, 8, 50])
+]
+
+for keys, freq in test_cases:
+    cost, _ = optimal_bst(keys, freq, len(keys))
+    print("Output for keys {}: {}".format(keys, cost))
