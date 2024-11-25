@@ -1,0 +1,38 @@
+# Floyd's Algorithm Implementation
+
+import numpy as np
+
+# Initialize the distance matrix
+routers = ['A', 'B', 'C', 'D', 'E', 'F']
+distance_matrix = np.array([[0, 3, np.inf, 7, np.inf, np.inf],
+                             [3, 0, 2, np.inf, np.inf, np.inf],
+                             [np.inf, 2, 0, 1, 2, np.inf],
+                             [7, np.inf, 1, 0, 3, np.inf],
+                             [np.inf, np.inf, 2, 3, 0, 5],
+                             [np.inf, np.inf, np.inf, np.inf, 5, 0]])
+
+# Floyd's Algorithm
+def floyd_warshall(dist):
+    num_routers = len(dist)
+    for k in range(num_routers):
+        for i in range(num_routers):
+            for j in range(num_routers):
+                if dist[i][j] > dist[i][k] + dist[k][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+    return dist
+
+# Calculate shortest paths
+shortest_paths = floyd_warshall(distance_matrix.copy())
+
+# Display shortest path from A to F before link failure
+print(f"Router A to Router F = {shortest_paths[0][5]}")
+
+# Simulate link failure between Router B and Router D
+distance_matrix[1][3] = np.inf
+distance_matrix[3][1] = np.inf
+
+# Recalculate shortest paths after link failure
+shortest_paths_after_failure = floyd_warshall(distance_matrix.copy())
+
+# Display shortest path from A to F after link failure
+print(f"Router A to Router F = {shortest_paths_after_failure[0][5]}")
