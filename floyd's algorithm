@@ -1,0 +1,44 @@
+import numpy as np
+
+def floyd_warshall(n, edges):
+    # Initialize the distance matrix
+    dist = np.full((n, n), float('inf'))
+    for i in range(n):
+        dist[i][i] = 0
+
+    # Fill the distance matrix with the given edges
+    for u, v, w in edges:
+        dist[u][v] = min(dist[u][v], w)
+        dist[v][u] = min(dist[v][u], w)
+
+    print("Distance matrix before applying Floyd's Algorithm:")
+    print(dist)
+
+    # Floyd's Algorithm
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if dist[i][j] > dist[i][k] + dist[k][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+
+    print("Distance matrix after applying Floyd's Algorithm:")
+    print(dist)
+
+    return dist
+
+def find_shortest_path(dist, start, end):
+    return dist[start][end]
+
+# Test case a
+n = 4
+edges_a = [[0, 1, 3], [1, 2, 1], [1, 3, 4], [2, 3, 1]]
+distance_matrix_a = floyd_warshall(n, edges_a)
+shortest_path_a = find_shortest_path(distance_matrix_a, 0, 3)
+print(f"Shortest path from City 0 to City 3 = {shortest_path_a}")
+
+# Test case b
+n_b = 6
+edges_b = [[0, 1, 1], [0, 2, 5], [1, 2, 2], [1, 3, 1], [2, 4, 3], [3, 4, 1], [3, 5, 6], [4, 5, 2]]
+distance_matrix_b = floyd_warshall(n_b, edges_b)
+shortest_path_b = find_shortest_path(distance_matrix_b, 0, 3)
+print(f"Shortest path from Router A to Router D = {shortest_path_b}")
